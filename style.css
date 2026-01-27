@@ -47,9 +47,9 @@ body {
 }
 
 .display {
-    font-size: x-large;
+    font-size: 50px;
 
-    padding: 0.5em;
+    padding: 0.5em 0.5em 0 0;
 
     background-color: rgb(71, 71, 71);
     color: white;
@@ -66,12 +66,20 @@ body {
 
 /* CALCULATOR BUTTONS */
 .calculator button {
+    font-size: larger;
     border-style: none;
     flex: 1;
 }
 
-.calculator button:hover {
-    opacity: 0.9;
+@media (hover: hover) {
+    .calculator button:hover {
+        opacity: 0.9;
+    }
+}
+
+.calculator button:active {
+    transform: scale(0.98); /* Slightly shrink the button to simulate a press */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Add a subtle shadow effect */
 }
 
 button.operator {
