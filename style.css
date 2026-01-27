@@ -20,62 +20,75 @@ body {
 
 /* HEADER */
 .header {
-    border: 1px black solid;
+    font-style: italic;
 }
 
 /* MAIN CONTAINER */
 .container.main {
-    border: 1px black solid;
+    /* border: 1px black solid; */
 
-    height: 80vh;
+    height: 75vh;
     width: 95vw;
 
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 /* CALCULATOR */
 .calculator {
-    border: 1px blueviolet solid;
-    background-color: aqua;
+    background-color: rgb(71, 71, 71);
 
-    height: 90%;
-    width: 90%;
+    height: 99%;
+    width: 400px;
 
     display: flex;
     flex-flow: column nowrap;
 }
 
 .display {
-    border: 1px black solid;
+    font-size: x-large;
+
+    padding: 0.5em;
+
+    background-color: rgb(71, 71, 71);
+    color: white;
+
+    display: flex;
+    justify-content: end;
+    align-items: end;
 }
 
 .row {
     display: flex;
-    flex: 4 0 auto;
+    flex: auto;
 }
 
 /* CALCULATOR BUTTONS */
 .calculator button {
-    flex: 1 0;
+    border-style: none;
+    flex: 1;
+}
+
+.calculator button:hover {
+    opacity: 0.9;
+}
+
+button.operator {
+    background-color: orange;
 }
 
 /* FIRST ROW */
-button.clear {
-    flex: 3 0 auto;
-}
+
 
 /* FIFTH ROW */
-button.zero {
-    flex: 1.5 0 auto;
-}
 
-button.decimal {
-    flex: 1.5 0 auto;
-}
 
 /* FOOTER */
 .footer {
-    border: 1px black solid;
-    margin-top: 1em;
+    border-radius: 5px;
+    background-color: antiquewhite;
+
+    margin-top: 1.5em;
+    padding: 5px;
 }
