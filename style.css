@@ -15,7 +15,7 @@ body {
     flex-flow: column wrap;
     align-items: center;
 
-    background-color: bisque;
+    background-color: rgb(255, 245, 232);
 }
 
 /* HEADER */
@@ -69,6 +69,8 @@ body {
     font-size: larger;
     border-style: none;
     flex: 1;
+
+    background-color: beige;
 }
 
 @media (hover: hover) {
