@@ -1,6 +1,4 @@
 // Basic math operators
-console.log(add(1, 2))
-
 function add(a, b) {
     return a + b;
 }
@@ -38,3 +36,49 @@ function operate(firstNumber, secondNumber, operator) {
             break;
     }
 }
+
+// Calculator display
+const display = document.querySelector(".display");
+display.textContent = 0;
+
+// Button functions
+const buttonList = document.querySelectorAll("button");
+buttonList.forEach(button => {
+    button.addEventListener("click", event => {
+        event.preventDefault();
+        let value = event.target.value;
+
+        if (!isNaN(+value)) {
+            if (display.textContent == 0) {
+               display.textContent = +value; 
+            } else {
+                display.textContent += +value;
+            }
+        }
+        
+        switch(value) {
+            case "clear":
+                display.textContent = "0";
+                break;
+            case "+":
+                display.textContent += ` \u002b `;
+                break;
+            case "-":
+                display.textContent += ` \u002d `;
+                break;
+            case "*":
+                display.textContent += ` \u00D7 `;
+                break;
+            case "/":
+                display.textContent += ` \u00f7 `;
+                break;
+            case ".":
+                display.textContent += `\u002e`;
+                break;
+            case "=":
+                display.textContent += ` \u003d `;
+                break;
+        }
+    })
+})
+
