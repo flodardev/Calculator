@@ -7,3 +7,75 @@ html {
 *, *:before, *:after {
     box-sizing: inherit;
 }
+
+body {
+    font-family: "Roboto", sans-serif;
+
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+
+    background-color: bisque;
+}
+
+/* HEADER */
+.header {
+    border: 1px black solid;
+}
+
+/* MAIN CONTAINER */
+.container.main {
+    border: 1px black solid;
+
+    height: 80vh;
+    width: 95vw;
+
+    display: flex;
+    justify-content: center;
+}
+
+/* CALCULATOR */
+.calculator {
+    border: 1px blueviolet solid;
+    background-color: aqua;
+
+    height: 90%;
+    width: 90%;
+
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.display {
+    border: 1px black solid;
+}
+
+.row {
+    display: flex;
+    flex: 4 0 auto;
+}
+
+/* CALCULATOR BUTTONS */
+.calculator button {
+    flex: 1 0;
+}
+
+/* FIRST ROW */
+button.clear {
+    flex: 3 0 auto;
+}
+
+/* FIFTH ROW */
+button.zero {
+    flex: 1.5 0 auto;
+}
+
+button.decimal {
+    flex: 1.5 0 auto;
+}
+
+/* FOOTER */
+.footer {
+    border: 1px black solid;
+    margin-top: 1em;
+}
