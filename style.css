@@ -69,11 +69,12 @@ body {
 
 /* CALCULATOR BUTTONS */
 .calculator button {
-    font-size: larger;
     border-style: none;
     flex: 1;
 
     background-color: beige;
+    font-size: x-large;
+    color:black;
 }
 
 @media (hover: hover) {
@@ -90,12 +91,6 @@ body {
 button.operator {
     background-color: orange;
 }
-
-/* FIRST ROW */
-
-
-/* FIFTH ROW */
-
 
 /* FOOTER */
 .footer {
