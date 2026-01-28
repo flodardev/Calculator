@@ -5,131 +5,170 @@ let secondNumber = null;
 let display = document.querySelector(".display");
 let shouldResetDisplay = false;
 let oneCycle = false;
-display.textContent = 0;
-
 let onFirstNumber = true;
 let onSecondNumber = false;
+let onOperator = false;
 
+display.textContent = 0;
+
+function handleInput(value) {
+    // Number input
+    if (!isNaN(+value)) {
+        if (shouldResetDisplay) {
+            display.textContent = value;
+
+            if (onFirstNumber) {
+                firstNumber = +display.textContent;
+            }
+
+            if (onSecondNumber) {
+                secondNumber = +display.textContent;
+            }
+
+            shouldResetDisplay = false;
+        } else if (display.textContent === "0") {
+            display.textContent = value;
+            if (onFirstNumber) {
+                firstNumber = value;
+            }
+        } else if (onFirstNumber) {
+            display.textContent += value;
+            firstNumber += value;
+        } else if (onSecondNumber) {
+            display.textContent += value;
+            secondNumber += value;
+        }
+        return; // Exit after handling number
+    }
+
+    switch (value) {
+        case "clear":
+            reset();
+            break;
+        case "delete":
+        case "Backspace":
+            if (firstNumber === null) {
+                reset();
+            } else {
+                deleteInput();
+            }
+            break;
+        case "+":
+        case "-":
+        case "*":
+        case "/":
+            if (oneCycle) {
+                oneCycle = false;
+                display.textContent = 0;
+            }
+
+            if (onFirstNumber) {
+                onFirstNumber = false;
+                onSecondNumber = true;
+                onOperator = true;
+            } else if (operator !== "" && !shouldResetDisplay) {
+                firstNumber = operate(+firstNumber, operator, +secondNumber);
+                display.textContent = firstNumber;
+
+                oneCycle = true;
+            }
+            operator = value;
+            if (!oneCycle) {
+                display.textContent += operator;
+            }
+            shouldResetDisplay = true;
+            break;
+
+        case ".":
+            if (!display.textContent.includes(".")) {
+                display.textContent += ".";
+            }
+            break;
+
+        case "=":
+        case "Enter":
+            if (firstNumber !== null && operator !== "") {
+                secondNumber = display.textContent; /* logic used current display content */
+                firstNumber = operate(+firstNumber, operator, +secondNumber);
+
+                if (isNaN(firstNumber)) {
+                    display.textContent = "To Infinity and beyond!";
+                } else {
+                    display.textContent = Math.floor(firstNumber * 100) / 100;
+                }
+
+                firstNumber = null;
+                operator = "";
+                secondNumber = null;
+                onFirstNumber = true;
+                onSecondNumber = false;
+                shouldResetDisplay = true;
+                oneCycle = true;
+            }
+            break;
+    }
+}
+
+// Mouse support
 const buttonList = document.querySelectorAll("button");
 buttonList.forEach(button => {
     button.addEventListener("click", event => {
         event.preventDefault();
-        let value = event.target.value;
-
-        // Number input
-        if (!isNaN(+value)) {
-            if (shouldResetDisplay) {
-                display.textContent = value;
-
-                if (onFirstNumber) {
-                    firstNumber = +display.textContent;
-                }
-
-                if (onSecondNumber) {
-                    secondNumber = +display.textContent;
-                }
-
-                shouldResetDisplay = false;
-            } else if (display.textContent === "0") {
-                display.textContent = value;
-                if (onFirstNumber) {
-                    firstNumber = value;
-                }
-            } else if (onFirstNumber) {
-                display.textContent += value;
-                firstNumber += value;
-            } else if (onSecondNumber) {
-                display.textContent += value;
-                secondNumber += value;
-            }
-        }
-
-        switch(value) {
-            case "clear":
-                reset();
-                break;
-            case "delete":
-                // deleteWhole();
-                if (firstNumber === null) {
-                    reset();
-                } else {
-                    deleteInput();
-                }
-                break;
-            case "+":
-            case "-":
-            case "*":
-            case "/":
-                if (onFirstNumber) {
-                    onFirstNumber = false;
-                    onSecondNumber = true;
-                }  else if (operator !== "" && !shouldResetDisplay) {
-                    firstNumber = operate(+firstNumber, operator, +secondNumber);
-                    display.textContent = firstNumber;
-                    
-                    oneCycle = true;
-                }
-                operator = value;
-                shouldResetDisplay = true;
-                break;
-
-            case ".":
-                if (!display.textContent.includes(".")) {
-                    display.textContent += ".";
-                }
-                break;
-
-            case "=":
-                if (firstNumber !== null && operator !== "") {
-                    secondNumber = display.textContent;
-                    firstNumber = operate(+firstNumber, operator, +secondNumber);
-                    
-                    if (isNaN(firstNumber)) {
-                        display.textContent = "To Infinity and beyond!";
-                    } else {
-                        display.textContent = Math.floor(firstNumber * 100) / 100;
-                    }
-
-                    firstNumber = null;
-                    operator = "";
-                    secondNumber = null;
-                    onFirstNumber = true;
-                    onSecondNumber = false;
-                    shouldResetDisplay = true;
-                }
-                break;
-        }
+        handleInput(event.target.value);
     })
+})
+
+// Keyboard support
+document.addEventListener("keydown", event => {
+    // Prevent default behavior for special keys to avoid scrolling/etc (optional but good)
+    if (event.key === "/" || event.key === "Enter") {
+        event.preventDefault();
+    }
+
+    let value = event.key;
+
+    // Map keyboard keys to calculator values
+    if (value === "Escape") value = "clear";
+    if (value === "Backspace") value = "delete";
+    if (value === "Enter") value = "=";
+
+    // Filter valid inputs
+    const validKeys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "+", "-", "*", "/", "=", "clear", "delete"];
+    if (validKeys.includes(value)) {
+        handleInput(value);
+    }
 })
 
 function deleteInput() {
     // First number
     if (onFirstNumber) {
-        let stringFirstNumber = String(firstNumber);
+        let stringFirstNumber = String(display.textContent);
 
         stringFirstNumber = stringFirstNumber.slice(0, -1);
-        display.textContent = stringFirstNumber;
+        display.textContent = stringFirstNumber || "0"; // handle empty string becoming 0
         firstNumber = +display.textContent;
-        //console.log("first number: " + stringFirstNumber)
 
         // Check empty string
         if (firstNumber === 0) {
-            console.log("first number is empty")
             display.textContent = 0;
         }
     }
- 
+
+    // Operator
+    if (onOperator && secondNumber === null) {
+        onOperator = false;
+        onFirstNumber = true;
+    }
 
     // Second number
-    if (onSecondNumber) {
+    if (onSecondNumber && onOperator) {
         let stringSecondNumber = String(secondNumber);
         stringSecondNumber = stringSecondNumber.slice(0, -1);
-        display.textContent = stringSecondNumber;
+        display.textContent = stringSecondNumber || "0";
         secondNumber = +display.textContent;
-        //console.log("second number: " + stringSecondNumber)
+
         if (secondNumber === 0) {
-            console.log("second number is empty")
-            display.textContent = 0;
+            display.textContent = `${firstNumber}${operator}`
 
             onSecondNumber = false;
             onFirstNumber = true;
@@ -138,30 +177,8 @@ function deleteInput() {
 
 }
 
-function deleteWhole() {
-    if (oneCycle) {
-        reset();
-        return;
-    }
-
-    // Delete starting from the right of the equation
-    if (secondNumber !== null) {
-        secondNumber = null;
-        display.textContent = "0";
-        shouldResetDisplay = true;
-        return;
-    } else if (operator !== "") {
-        operator = "";
-        return;
-    } else {
-        firstNumber = null;
-        display.textContent = "0";
-        return
-    }
-}
-
 function operate(first, op, second) {
-    switch(op) {
+    switch (op) {
         case "+": return first + second;
         case "-": return first - second;
         case "*": return first * second;
@@ -180,92 +197,3 @@ function reset() {
     onFirstNumber = true;
     onSecondNumber = false;
 }
-
-// Keyboard support
-document.addEventListener("keydown", event => {
-        event.preventDefault();
-        let value = event.key;
-        console.log(value)
-
-        // Number input
-        if (!isNaN(+value)) {
-            if (shouldResetDisplay) {
-                display.textContent = value;
-
-                if (onFirstNumber) {
-                    firstNumber = +display.textContent;
-                }
-
-                if (onSecondNumber) {
-                    secondNumber = +display.textContent;
-                }
-
-                shouldResetDisplay = false;
-            } else if (display.textContent === "0") {
-                display.textContent = value;
-                if (onFirstNumber) {
-                    firstNumber = value;
-                }
-            } else if (onFirstNumber) {
-                display.textContent += value;
-                firstNumber += value;
-            } else if (onSecondNumber) {
-                display.textContent += value;
-                secondNumber += value;
-            }
-        }
-
-        switch(value) {
-            case "Escape":
-                reset();
-                break;
-            case "Backspace":
-                // deleteWhole();
-                deleteInput();
-                break;
-            case "+":
-            case "-":
-            case "*":
-            case "/":
-                if (onFirstNumber) {
-                    onFirstNumber = false;
-                    onSecondNumber = true;
-                }  else if (operator !== "" && !shouldResetDisplay) {
-                    firstNumber = operate(+firstNumber, operator, +secondNumber);
-                    display.textContent = firstNumber;
-                    
-                    oneCycle = true;
-                }
-                operator = value;
-                operatorHistory.textContent = operator;
-                shouldResetDisplay = true;
-                break;
-
-            case ".":
-                if (!display.textContent.includes(".")) {
-                    display.textContent += ".";
-                }
-                break;
-
-            case "=":
-                if (firstNumber !== null && operator !== "") {
-                    secondNumber = +display.textContent;
-                    firstNumber = operate(+firstNumber, operator, +secondNumber);
-                    
-                    if (isNaN(firstNumber)) {
-                        display.textContent = "To Infinity and beyond!";
-                    } else {
-                        display.textContent = Math.floor(firstNumber * 100) / 100;
-                        oneCycle = true;
-                    }
-
-                    firstNumber = null;
-                    operator = "";
-                    secondNumber = null;
-                    onFirstNumber = true;
-                    onSecondNumber = false;
-                    shouldResetDisplay = true;
-                }
-                break;
-        }
-})
