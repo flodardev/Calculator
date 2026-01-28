@@ -117,4 +117,5 @@ function reset() {
     secondNumber = null;
     display.textContent = "0";
     shouldResetDisplay = false;
+    oneCycle = false;
 }
