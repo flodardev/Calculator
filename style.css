@@ -100,3 +100,8 @@ button.operator {
     margin-top: 1.5em;
     padding: 5px;
 }
+
+.gif {
+    height: 50px;
+    width: 50px;;
+}

@@ -32,7 +32,23 @@ buttonList.forEach(button => {
                 display.textContent = "0";
                 shouldResetDisplay = false;
                 break;
-
+            case "delete":
+                console.log("delete button clicked")
+                console.log(secondNumber)
+                // Delete starting from the right of the equation
+                if (secondNumber != null) {
+                    console.log("hello")
+                    secondNumber = null;
+                    display.textContent = "0";
+                    break;
+                } else if (operator !== "") {
+                    operator = "";
+                    break;
+                } else if (firstNumber !== null) {
+                    firstNumber = null;
+                    break;
+                }
+                break;
             case "+":
             case "-":
             case "*":
