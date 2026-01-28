@@ -20,6 +20,7 @@ body {
 
 /* HEADER */
 .header {
+    text-align: center;
     font-style: italic;
 }
 

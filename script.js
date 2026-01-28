@@ -1,118 +1,86 @@
-// Vvariables
-let operatorSymbol;
-let arrayCalcHistory = [];
-let array = [];
-let anyNumber = "";
-
-
-// Calculator display
-const display = document.querySelector(".display");
+// Variables
+let firstNumber = null;
+let operator = "";
+let secondNumber = null;
+let display = document.querySelector(".display");
+let shouldResetDisplay = false;
 display.textContent = 0;
 
-// Button functions
 const buttonList = document.querySelectorAll("button");
 buttonList.forEach(button => {
     button.addEventListener("click", event => {
         event.preventDefault();
         let value = event.target.value;
 
+        // Number input
         if (!isNaN(+value)) {
-            if (display.textContent == 0) {
-               display.textContent = +value; 
-               anyNumber += value;
+            if (shouldResetDisplay) {
+                display.textContent = value;
+                shouldResetDisplay = false;
+            } else if (display.textContent === "0") {
+                display.textContent = value;
             } else {
-                display.textContent += +value;
-                anyNumber += value;
+                display.textContent += value;
             }
         }
-        
+
         switch(value) {
             case "clear":
+                firstNumber = null;
+                operator = "";
+                secondNumber = null;
                 display.textContent = "0";
-                anyNumber = "";
-                array.length = 0;
+                shouldResetDisplay = false;
                 break;
+
             case "+":
-                display.textContent += ` \u002b `;
-                operatorSymbol = value;
-
-                array.push(anyNumber);
-                anyNumber = "";
-
-                break;
             case "-":
-                display.textContent += ` \u002d `;
-                operatorSymbol = value;
-
-                array.push(anyNumber);
-                anyNumber = "";
-
-                break;
             case "*":
-                display.textContent += ` \u00D7 `;
-                operatorSymbol = value;
-
-                array.push(anyNumber);
-                anyNumber = "";
-
-                break;
             case "/":
-                display.textContent += ` \u00f7 `;
-                operatorSymbol = value;
-
-                array.push(anyNumber);
-                anyNumber = "";
-
+                if (firstNumber === null) {
+                    firstNumber = +display.textContent;
+                } else if (operator !== "" && !shouldResetDisplay) {
+                    secondNumber = +display.textContent;
+                    firstNumber = operate(firstNumber, operator, secondNumber);
+                    display.textContent = firstNumber;
+                }
+                operator = value;
+                shouldResetDisplay = true;
                 break;
+
             case ".":
-                display.textContent += `\u002e`;
+                if (!display.textContent.includes(".")) {
+                    display.textContent += ".";
+                }
                 break;
+
             case "=":
-                
-                if (anyNumber !== "") {
-                    array.push(anyNumber);
-                    anyNumber = "";
-                }
+                if (firstNumber !== null && operator !== "") {
+                    secondNumber = +display.textContent;
+                    firstNumber = operate(firstNumber, operator, secondNumber);
+                    
+                    if (isNaN(firstNumber)) {
+                        display.textContent = "To Infinity and beyond!";
+                    } else {
+                        display.textContent = Math.floor(firstNumber * 100) / 100;
+                    }
 
-                display.textContent = operate(array, operatorSymbol);
-
-                if (display.textContent === "") {
-                    display.textContent = "0";
+                    firstNumber = null;
+                    operator = "";
+                    secondNumber = null;
+                    shouldResetDisplay = true;
                 }
-                
-                // display.textContent += ` \u003d `;
                 break;
         }
     })
 })
 
-
-function operate(array, operatorSymbol) {
-    console.log(array)
-
-    // Dictionary of operations
-    const operations = {
-        "+": (a, b) => a + b,
-        "-": (a, b) => a - b,
-        "*": (a, b) => a * b,
-        "/": (a, b) => a / b,
-    };
-
-    const operation = operations[operatorSymbol];
-
-    const total = array.reduce((total, current) => {
-        return operation(+total, +current);
-    }, 0)
-
-    // Push to history array
-    arrayCalcHistory.push(total);
-    console.log(arrayCalcHistory);
-
-    // Empty the calculation array
-    array.length = 0;
-
-    // Reset operator symbol
-    operatorSymbol = "";
-
-    return total;
+function operate(first, op, second) {
+    switch(op) {
+        case "+": return first + second;
+        case "-": return first - second;
+        case "*": return first * second;
+        case "/": return second !== 0 ? first / second : NaN;
+        default: return first;
+    }
 }
