@@ -4,6 +4,7 @@ let operator = "";
 let secondNumber = null;
 let display = document.querySelector(".display");
 let shouldResetDisplay = false;
+let oneCycle = false;
 display.textContent = 0;
 
 const buttonList = document.querySelectorAll("button");
@@ -16,9 +17,15 @@ buttonList.forEach(button => {
         if (!isNaN(+value)) {
             if (shouldResetDisplay) {
                 display.textContent = value;
+
+                secondNumber = +display.textContent;
+
                 shouldResetDisplay = false;
             } else if (display.textContent === "0") {
                 display.textContent = value;
+
+
+
             } else {
                 display.textContent += value;
             }
@@ -26,39 +33,42 @@ buttonList.forEach(button => {
 
         switch(value) {
             case "clear":
-                firstNumber = null;
-                operator = "";
-                secondNumber = null;
-                display.textContent = "0";
-                shouldResetDisplay = false;
+                reset();
                 break;
             case "delete":
-                console.log("delete button clicked")
-                console.log(secondNumber)
-                // Delete starting from the right of the equation
-                if (secondNumber != null) {
-                    console.log("hello")
-                    secondNumber = null;
-                    display.textContent = "0";
-                    break;
-                } else if (operator !== "") {
-                    operator = "";
-                    break;
-                } else if (firstNumber !== null) {
-                    firstNumber = null;
+                if (oneCycle) {
+                    reset();
                     break;
                 }
-                break;
+
+                // Delete starting from the right of the equation
+                if (secondNumber != null) {
+                    console.log("second number deleted")
+                    secondNumber = null;
+                    display.textContent = "0";
+                    shouldResetDisplay = true;
+                    break;
+                } else if (operator !== "") {
+                    console.log("operator deleted")
+                    operator = "";
+                    break;
+                } else {
+                    console.log("first number deleted")
+                    firstNumber = null;
+                    display.textContent = "0";
+                    break;
+                }
             case "+":
             case "-":
             case "*":
             case "/":
                 if (firstNumber === null) {
                     firstNumber = +display.textContent;
-                } else if (operator !== "" && !shouldResetDisplay) {
-                    secondNumber = +display.textContent;
+                }  else if (operator !== "" && !shouldResetDisplay) {
                     firstNumber = operate(firstNumber, operator, secondNumber);
                     display.textContent = firstNumber;
+                    
+                    oneCycle = true;
                 }
                 operator = value;
                 shouldResetDisplay = true;
@@ -99,4 +109,12 @@ function operate(first, op, second) {
         case "/": return second !== 0 ? first / second : NaN;
         default: return first;
     }
+}
+
+function reset() {
+    firstNumber = null;
+    operator = "";
+    secondNumber = null;
+    display.textContent = "0";
+    shouldResetDisplay = false;
 }

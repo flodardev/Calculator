@@ -75,6 +75,8 @@ body {
     background-color: beige;
     font-size: x-large;
     color:black;
+
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 @media (hover: hover) {
